@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}RudAi{% endblock %}
+{% block content %}
+   <div class="container">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.prompt }}
+            <button type="submit">Відправити</button>
+        </form>
+
+        {% if response_text %}
+            <div class="response">
+                <h3>Відповідь:</h3>
+                <p>{{ response_text }}</p>
+            </div>
+        {% endif %}
+
+        {% if image_url %}
+            <div class="generated-image">
+                <img src="{{ image_url }}" alt="Generated Image">
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

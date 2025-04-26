@@ -1,5 +1,6 @@
 # Create your views here.
 
+
 from django.shortcuts import render
 from .forms import PromptFor
 
@@ -12,13 +13,12 @@ def home(request):
         if form.is_valid():
             prompt = form.cleaned_data['prompt']
 
-            # Поки що просто виводимо, що написав користувач
             response_text = f"Ви написали: {prompt}"
 
     else:
         form = PromptFor()
 
-    return render(request, 'base.html', {
+    return render(request, 'home.html', {
         'form': form,
         'response_text': response_text,
         'image_url': image_url,

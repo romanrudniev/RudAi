@@ -4,12 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rud AI</title>
+    <title>{% block title %}RudAi{% endblock %}</title>
     <link rel="icon" href="{% static 'img/site_icon.png' %}" type="image/png">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-
     <nav>
         <a href="http://127.0.0.1:8000/"><img src="{% static 'img/site_icon.png' %}" alt="Logo"></a>
         <div>
@@ -17,28 +16,7 @@
             <a href="#">Зареєструватися</a>
         </div>
     </nav>
-
-    <div class="container">
-        <form method="post">
-            {% csrf_token %}
-            {{ form.prompt }}
-            <button type="submit">Відправити</button>
-        </form>
-
-        {% if response_text %}
-            <div class="response">
-                <h3>Відповідь:</h3>
-                <p>{{ response_text }}</p>
-            </div>
-        {% endif %}
-
-        {% if image_url %}
-            <div class="generated-image">
-                <img src="{{ image_url }}" alt="Generated Image">
-            </div>
-        {% endif %}
-    </div>
-
+    {% block content %}{% endblock %}
 </body>
 
 </html>
