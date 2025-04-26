@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}RudAi{% endblock %}
+{% block title %}RudAI{% endblock %}
 {% block content %}
    <div class="container">
         <form method="post">
@@ -15,9 +15,9 @@
             </div>
         {% endif %}
 
-        {% if image_url %}
+        {% if response_image %}
             <div class="generated-image">
-                <img src="{{ image_url }}" alt="Generated Image">
+                <img src="{{ response_image }}" alt="Generated Image">
             </div>
         {% endif %}
     </div>

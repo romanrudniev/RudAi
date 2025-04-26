@@ -1,25 +1,23 @@
-# Create your views here.
-
-
 from django.shortcuts import render
-from .forms import PromptFor
+from .forms import PromptForm
+from openai import OpenAI
 
 def home(request):
     response_text = None
-    image_url = None
+    response_image = None
 
     if request.method == 'POST':
-        form = PromptFor(request.POST)
+        form = PromptForm(request.POST)
         if form.is_valid():
             prompt = form.cleaned_data['prompt']
 
-            response_text = f"Ви написали: {prompt}"
+            response_text = f"Ви написали: {prompt}" #Виводить те що ми написали
 
     else:
-        form = PromptFor()
+        form = PromptForm()
 
     return render(request, 'home.html', {
         'form': form,
         'response_text': response_text,
-        'image_url': image_url,
+        'response_image': response_image,
     })

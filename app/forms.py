@@ -1,4 +1,4 @@
 from django import forms
 
-class PromptFor(forms.Form):
-    prompt = forms.CharField(label="Enter your prompt", max_length=750)
+class PromptForm(forms.Form):
+    prompt = forms.CharField(label="Enter your prompt", max_length=1000, widget=forms.Textarea)
