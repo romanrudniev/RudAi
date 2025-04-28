@@ -10,11 +10,15 @@
 </head>
 <body>
     <nav>
-        <a href="http://127.0.0.1:8000/"><img src="{% static 'img/site_icon.png' %}" alt="Logo"></a>
+        <a href="{% url 'home' %}"><img src="{% static 'img/site_icon.png' %}" alt="Logo"></a>
         <div>
-            <a href="http://127.0.0.1:8000/login/">Увійти</a>
-            <a href="http://127.0.0.1:8000/register/">Зареєструватися</a>
-            <a href="#">Вийти з акаунта</a>
+            {% if user.is_authenticated %}
+                <span>Привіт, {{ user.username }}!</span>
+                <a href="{% url 'logout' %}">Вийти</a>
+            {% else %}
+                <a href="{% url 'login' %}">Увійти</a>
+                <a href="{% url 'register' %}">Зареєструватися</a>
+            {% endif %}
         </div>
     </nav>
     {% block content %}{% endblock %}
