@@ -45,7 +45,7 @@ def register_view(request):
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
             user.save()
-            messages.success(request, "Реєстрація успішна! Тепер увійдіть.")
+            messages.success(request, "Registration successful! Now log in.")
             return redirect('login')
     else:
         form = RegisterForm()
@@ -60,7 +60,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, f"Ласкаво просимо, {username}!")
+                messages.success(request, f"Welcome, {username}!")
                 return redirect('home')
     else:
         form = LoginForm()
@@ -70,5 +70,5 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    messages.success(request, "Ви успішно вийшли з акаунта.")
+    messages.success(request, "You have successfully logged out.")
     return redirect('home')

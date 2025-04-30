@@ -13,11 +13,11 @@
         <a href="{% url 'home' %}"><img src="{% static 'img/site_icon.png' %}" alt="Logo"></a>
         <div>
             {% if user.is_authenticated %}
-                <span>Привіт, {{ user.username }}!</span>
-                <a href="{% url 'logout' %}">Вийти</a>
+                <span>{{ user.username }}</span>
+                <a href="{% url 'logout' %}">Exit</a>
             {% else %}
-                <a href="{% url 'login' %}">Увійти</a>
-                <a href="{% url 'register' %}">Зареєструватися</a>
+                <a href="{% url 'login' %}">Log in</a>
+                <a href="{% url 'register' %}">Register</a>
             {% endif %}
         </div>
     </nav>
