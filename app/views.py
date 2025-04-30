@@ -51,7 +51,6 @@ def register_view(request):
         form = RegisterForm()
     return render(request, 'register.html', {'form': form})
 
-
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
@@ -66,6 +65,7 @@ def login_view(request):
     else:
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
+
 
 
 def logout_view(request):
