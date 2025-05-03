@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
+from project.settings import API_KEY
 from .forms import PromptForm, RegisterForm, LoginForm
 from django.contrib.auth import authenticate, login, logout
 import openai
 from django.contrib import messages
 
 # openai.api_key = ''
-# client = openai.OpenAI()
+client = openai.OpenAI(api_key=API_KEY)
 
 def home(request):
     response_text = None
@@ -16,17 +17,36 @@ def home(request):
         if form.is_valid():
             prompt = form.cleaned_data['prompt']
 
-            # completion = client.chat.completions.create(
-            #     model="gpt-4.1",
-            #     messages=[
-            #         {"role": "developer", "content": "You are a helpful assistant."},
-            #         {"role": "user", "content": prompt}
-            #     ]
+            completion = client.chat.completions.create(
+                model="gpt-4.1",
+                messages=[
+                    {"role": "developer", "content": "You are a helpful assistant."},
+                    {"role": "user", "content": prompt}
+                ]
+            )
+
+            response_text = completion.choices[0].message.content
+
+
+            # # model "dall-e-3"
+            image_result = client.images.generate(
+                model="dall-e-3",
+                prompt=prompt
+            )
+
+            response_image = image_result.data[0].url
+
+
+
+            # # model "gpt-image-1"
+            # image_result = client.images.generate(
+            #     model="gpt-image-1",
+            #     prompt=prompt
             # )
             #
-            # response_text = completion.choices[0].message
+            # image_base64 = image_result.data[0].b64_json
+            # response_image = image_base64.b64decode(image_base64)
 
-            response_text = f"Ви написали: {prompt}"
 
     else:
         form = PromptForm()
