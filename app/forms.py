@@ -4,7 +4,16 @@ from django.contrib.auth.forms import AuthenticationForm
 
 
 class PromptForm(forms.Form):
-    prompt = forms.CharField(label="Enter your prompt", max_length=1000, widget=forms.Textarea)
+    MODEL_CHOICES = [
+        ("gpt-3.5-turbo", "GPT-3.5 Turbo"),
+        ("gpt-4.1", "GPT-4"),
+        ("dall-e-3", "DALL-E 3"),
+        ("gpt-image-1", "GPT-Image-1"),
+    ]
+
+    prompt = forms.CharField(label="Введіть запит:", max_length=1000, widget=forms.Textarea)
+    model_type = forms.ChoiceField(label="Оберіть модель", choices=MODEL_CHOICES, initial="gpt-3.5-turbo")
+
 
 
 class RegisterForm(forms.ModelForm):

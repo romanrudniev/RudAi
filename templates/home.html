@@ -1,24 +1,35 @@
 {% extends 'base.html' %}
 {% block title %}RudAI{% endblock %}
 {% block content %}
-   <div class="container">
-        <form method="post">
-            {% csrf_token %}
-            {{ form.prompt }}
-            <button type="submit">Відправити</button>
-        </form>
+<div class="container">
+    <form method="post">
+    {% csrf_token %}
+    <label for="prompt">Введіть запит:</label><br>
+    {{ form.prompt }}<br><br>
 
-        {% if response_text %}
-            <div class="response">
-                <h3>Відповідь:</h3>
-                <p>{{ response_text }}</p>
-            </div>
-        {% endif %}
+    <label for="model_type">Оберіть модель:</label><br>
+    {{ form.model_type }}<br><br>
 
-        {% if response_image %}
-            <div class="generated-image">
-                <img src="{{ response_image }}" alt="Generated Image">
-            </div>
-        {% endif %}
+    <button type="submit">Відправити</button>
+</form>
+
+{% if error_message %}
+    <p style="color:red;">{{ error_message }}</p>
+{% endif %}
+
+{% if response_text %}
+    <div class="response">
+        <h3>Відповідь:</h3>
+        <p>{{ response_text }}</p>
     </div>
+{% endif %}
+
+{% if response_image %}
+    <div class="generated-image">
+        <h3>Згенероване зображення:</h3>
+        <img src="{{ response_image }}" alt="Generated Image">
+    </div>
+{% endif %}
+
+</div>
 {% endblock %}

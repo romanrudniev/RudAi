@@ -4,6 +4,7 @@ from .forms import PromptForm, RegisterForm, LoginForm
 from django.contrib.auth import authenticate, login, logout
 import openai
 from django.contrib import messages
+import base64
 
 # openai.api_key = ''
 client = openai.OpenAI(api_key=API_KEY)
@@ -11,52 +12,60 @@ client = openai.OpenAI(api_key=API_KEY)
 def home(request):
     response_text = None
     response_image = None
+    error_message = None
 
     if request.method == 'POST':
         form = PromptForm(request.POST)
         if form.is_valid():
             prompt = form.cleaned_data['prompt']
-
-            completion = client.chat.completions.create(
-                model="gpt-4.1",
-                messages=[
-                    {"role": "developer", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": prompt}
-                ]
-            )
-
-            response_text = completion.choices[0].message.content
+            selected_model = form.cleaned_data['model_type']
 
 
-            # # model "dall-e-3"
-            image_result = client.images.generate(
-                model="dall-e-3",
-                prompt=prompt
-            )
-
-            response_image = image_result.data[0].url
-
-
-
-            # # model "gpt-image-1"
-            # image_result = client.images.generate(
-            #     model="gpt-image-1",
-            #     prompt=prompt
-            # )
-            #
-            # image_base64 = image_result.data[0].b64_json
-            # response_image = image_base64.b64decode(image_base64)
+            # gpt-3.5-turbo", "gpt-4.1
+            try:
+                if selected_model in ["gpt-3.5-turbo", "gpt-4.1"]:
+                    completion = client.chat.completions.create(
+                        model=selected_model,
+                        messages=[
+                            {"role": "system", "content": "You are a helpful assistant."},
+                            {"role": "user", "content": prompt}
+                        ]
+                    )
+                    response_text = completion.choices[0].message.content
 
 
+                # dall-e-3
+                elif selected_model == "dall-e-3":
+                    image_result = client.images.generate(
+                        model="dall-e-3",
+                        prompt=prompt
+                    )
+                    response_image = image_result.data[0].url
+
+
+                # gpt-image-1
+                completion = client.chat.completions.create(
+                    model="gpt-image-1",
+                    messages=[
+                        {"role": "system", "content": "You are an AI that generates images based on user input."},
+                        {"role": "user", "content": prompt}
+                    ]
+                )
+                image_url = completion.choices[0].message.content.strip()
+                response_image = image_url
+
+            except Exception as e:
+                error_message = str(e)
     else:
-        form = PromptForm()
+        selected_model = request.GET.get('model_type', 'gpt-3.5-turbo')
+        form = PromptForm(initial={'model_type': selected_model})
 
     return render(request, 'home.html', {
         'form': form,
         'response_text': response_text,
         'response_image': response_image,
+        'error_message': error_message,
     })
-
 
 def register_view(request):
     if request.method == 'POST':
