@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Історія генерацій{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Ваша історія генерацій</h2>
+    {% if history %}
+        {% for item in history %}
+            <div class="history-item">
+                <p><strong>🕒 {{ item.timestamp|date:"Y-m-d H:i" }}</strong></p>
+                <p><strong>Модель:</strong> {{ item.model_used }}</p>
+                <p><strong>Запит:</strong> {{ item.prompt }}</p>
+
+                {% if item.response_text %}
+                    <p><strong>Відповідь:</strong> {{ item.response_text }}</p>
+                {% endif %}
+
+                {% if item.response_image_url %}
+                    <img src="{{ item.response_image_url }}" alt="Згенероване зображення" style="max-width:300px;">
+                {% endif %}
+                <hr>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>У вас ще немає збережених запитів.</p>
+    {% endif %}
+</div>
+{% endblock %}

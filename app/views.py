@@ -5,22 +5,27 @@ from django.contrib.auth import authenticate, login, logout
 import openai
 from django.contrib import messages
 import base64
+from .models import QueryHistory
 
 # openai.api_key = ''
 client = openai.OpenAI(api_key=API_KEY)
 
 def home(request):
+    if request.user.is_authenticated:
+        QueryHistory.objects.create(
+            user=request.user,
+            # query=query,
+            query='query',
+            response_text=None,
+            response_image=None
+        )
     response_text = None
     response_image = None
-    error_message = None
-
     if request.method == 'POST':
         form = PromptForm(request.POST)
         if form.is_valid():
             prompt = form.cleaned_data['prompt']
             selected_model = form.cleaned_data['model_type']
-
-
             # gpt-3.5-turbo", "gpt-4.1
             try:
                 if selected_model in ["gpt-3.5-turbo", "gpt-4.1"]:
@@ -44,17 +49,16 @@ def home(request):
 
 
                 # gpt-image-1
-                completion = client.chat.completions.create(
-                    model="gpt-image-1",
-                    messages=[
-                        {"role": "system", "content": "You are an AI that generates images based on user input."},
-                        {"role": "user", "content": prompt}
-                    ]
-                )
-                image_url = completion.choices[0].message.content.strip()
-                response_image = image_url
+                elif selected_model == "gpt-image-1":
+                    image_result = client.images.generate(
+                        model="gpt-image-1",
+                        prompt=prompt,
+                        response_format="b64_json"
+                    )
+                    b64_data = image_result.data[0].b64_json
+                    response_image = f"data:image/png;base64,{b64_data}"
 
-            except Exception as e:
+            except openai.OpenAIError as e:
                 error_message = str(e)
     else:
         selected_model = request.GET.get('model_type', 'gpt-3.5-turbo')
